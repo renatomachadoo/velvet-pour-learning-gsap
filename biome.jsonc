@@ -7,6 +7,12 @@
     "rules": {
       "suspicious": {
         "noUnknownAtRules": "off"
+      },
+      "performance": {
+        "noImgElement": "off"
+      },
+      "nursery": {
+        "useImageSize": "off"
       }
     }
   }
