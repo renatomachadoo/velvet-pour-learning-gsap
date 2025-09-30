@@ -1,8 +1,14 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
+import { useRef } from "react";
+import { useMediaQuery } from "react-responsive";
 
 export function Hero() {
+  const videoRef = useRef();
+
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
   useGSAP(() => {
     const heroSplit = new SplitText(".title", {
       type: "chars, words",
@@ -55,43 +61,74 @@ export function Hero() {
         },
         0
       );
+
+    const startValue = isMobile ? "top 50%" : "center 60%";
+    const endValue = isMobile ? "120% top" : "bottom top";
+
+    const videoTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: "video",
+        start: startValue,
+        end: endValue,
+        scrub: true,
+        pin: true,
+      },
+    });
+
+    videoRef.current.onloadedmetadata = () => {
+      videoTimeline.to(videoRef.current, {
+        currentTime: videoRef.current.duration,
+      });
+    };
   }, []);
 
   return (
-    <section className="noisy" id="hero">
-      <h1 className="title">MOJITO</h1>
+    <>
+      <section className="noisy" id="hero">
+        <h1 className="title">MOJITO</h1>
 
-      <img
-        alt="left-leaf"
-        className="left-leaf"
-        src="/images/hero-left-leaf.png"
-      />
+        <img
+          alt="left-leaf"
+          className="left-leaf"
+          src="/images/hero-left-leaf.png"
+        />
 
-      <img
-        alt="right-leaf"
-        className="right-leaf"
-        src="/images/hero-right-leaf.png"
-      />
+        <img
+          alt="right-leaf"
+          className="right-leaf"
+          src="/images/hero-right-leaf.png"
+        />
 
-      <div className="body">
-        <div className="content">
-          <div className="hidden space-y-5 md:block">
-            <p>Cool. Crisp. Classic.</p>
-            <p className="subtitle">
-              Sip the Spirit <br /> of Summer
-            </p>
-          </div>
+        <div className="body">
+          <div className="content">
+            <div className="hidden space-y-5 md:block">
+              <p>Cool. Crisp. Classic.</p>
+              <p className="subtitle">
+                Sip the Spirit <br /> of Summer
+              </p>
+            </div>
 
-          <div className="view-cocktails">
-            <p className="subtitle">
-              Every cocktail we serve is a reflection of our obsession with
-              detail — from the first muddle to the final garnish. That care is
-              what turns a simple drink into something truly memorable.{" "}
-            </p>
-            <a href="#cocktails">View Cocktails</a>
+            <div className="view-cocktails">
+              <p className="subtitle">
+                Every cocktail we serve is a reflection of our obsession with
+                detail — from the first muddle to the final garnish. That care
+                is what turns a simple drink into something truly memorable.{" "}
+              </p>
+              <a href="#cocktails">View Cocktails</a>
+            </div>
           </div>
         </div>
+      </section>
+
+      <div className="video absolute inset-0">
+        <video
+          muted
+          playsInline
+          preload="auto"
+          ref={videoRef}
+          src="./videos/output.mp4"
+        />
       </div>
-    </section>
+    </>
   );
 }
